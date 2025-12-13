@@ -24,6 +24,7 @@ namespace QueueSolver.Web.Controllers
         public async Task<IActionResult> Run([FromBody] SimulationInput input)
         {
             // ... (Existing code to run DES) ...
+            input.Capacity--;
             var des = new DiscreteEventSimulator();
             var result = await Task.Run(() => des.Run(input, (snapshot) => {
                 _hub.Clients.All.SendAsync("ReceiveProgress", snapshot);

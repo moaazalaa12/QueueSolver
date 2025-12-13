@@ -16,7 +16,8 @@ namespace QueueSolver.Core.Solver
             for (int t = (int)Ta; t <= 100; t++)
             {
                 double checkValue = Math.Floor(t / Ta) - Math.Floor(t / Ts - (Ta / Ts));
-                if (Math.Abs(checkValue - 5.0) < Epsilon)return t;
+                if (Math.Abs(checkValue - 5.0) < Epsilon)
+                    return t;
             }
 
             return -1;
