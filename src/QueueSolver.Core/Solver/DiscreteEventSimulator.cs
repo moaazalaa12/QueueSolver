@@ -17,6 +17,7 @@ namespace QueueSolver.Core.Solver
             return 0;
         }
     }
+
     public record SimulationEvent(EventType Type, double Time, Customer Customer);
 
     public class DiscreteEventSimulator
@@ -74,49 +75,45 @@ namespace QueueSolver.Core.Solver
                 eventQueue.Enqueue(evt, evt);
             }
 
-            // Initialize History & Area
             RecordHistory(stats, 0, systemCount, queueCount);
             double areaL = 0;
             double areaLq = 0;
             double lastEventTime = 0;
 
-            // --- 3. Simulation Loop ---
+
             while (eventQueue.Count > 0)
             {
                 var evt = eventQueue.Dequeue();
                 double previousTime = currentTime;
                 currentTime = evt.Time;
 
-                // حساب المساحات (Time Weighted Averages)
+
                 double duration = currentTime - previousTime;
                 areaL += systemCount * duration;
                 areaLq += queueCount * duration;
                 lastEventTime = currentTime;
 
-                // تسجيل الحالة القديمة للرسم (لإنشاء Step Chart)
                 RecordHistory(stats, previousTime, systemCount, queueCount);
 
-                // --- معالجة الحدث ---
+
                 if (evt.Type == EventType.Arrival)
                 {
                     HandleArrival(input, evt.Customer, ref systemCount, ref busyServers, ref queueCount, waitingQueue, eventQueue, currentTime, stats);
                 }
-                else // Departure
+                else
                 {
                     HandleDeparture(ref systemCount, ref busyServers, ref queueCount, waitingQueue, eventQueue, currentTime, input);
                 }
 
-                // تسجيل الحالة الجديدة بعد التغيير
                 RecordHistory(stats, currentTime, systemCount, queueCount);
             }
 
-            // --- 4. Finalize Calculation & Ti Logic ---
             double rho = input.Lambda / (input.Servers * input.Mu);
 
-            // **منطق Ti المُصحح بناءً على طلبك:**
-            if (rho > 1.0) // Overloaded Case (μ < λ) - Ti هو أول وقت النظام يصبح فيه ممتلئ
+
+            if (rho > 1.0)
             {
-                // Ti تم تسجيله بالفعل كـ FirstBusyTime في HandleArrival
+                
             }
             else
             {
@@ -141,7 +138,7 @@ namespace QueueSolver.Core.Solver
                 stats.FirstBusyTime = now;
             }
 
-            // 2. Capacity Check
+
             if (input.Capacity != int.MaxValue && sysCount >= input.Capacity)
             {
                 c.IsRejected = true;
@@ -206,7 +203,6 @@ namespace QueueSolver.Core.Solver
             }
         }
 
-        // Helper methods (GenerateInterarrival / GenerateService) - تأكد أنها موجودة كما في الرد السابق
         private double GenerateInterarrival(SimulationInput input)
         {
             if (input.ArrivalDist == DistributionType.Deterministic) return 1.0 / input.Lambda;
@@ -231,9 +227,9 @@ namespace QueueSolver.Core.Solver
         public double Lambda { get; set; }
         public double Mu { get; set; }
         public int N { get; set; } = 100;
-        public bool ForceSimulation { get; set; }
         public int InitialCustomers { get; set; } = 0;
     }
+
     public class TimePoint
     {
         public double Time { get; set; }
@@ -258,6 +254,7 @@ namespace QueueSolver.Core.Solver
 
         public List<TimePoint> QueueSizeHistory { get; set; } = new();
     }
+
     public class SimulationSnapshot
     {
         public double CurrentTime { get; set; }

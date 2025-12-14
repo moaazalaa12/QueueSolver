@@ -6,6 +6,8 @@ namespace QueueSolver.Core.Solver
 {
     public static class DeterministicSolver
     {
+        private const double Epsilon = 1e-9;
+
         public static double FindFirstBalkTime(double lambda, double mu, int servers, int capacity)
         {
             double Ta = 1.0 / lambda;
@@ -22,8 +24,6 @@ namespace QueueSolver.Core.Solver
 
             return -1;
         }
-
-        private const double Epsilon = 1e-9;
 
         public static double FindFirstEmptyTime(double lambda, double mu, int initialCustomers)
         {

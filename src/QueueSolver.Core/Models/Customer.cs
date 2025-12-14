@@ -9,9 +9,8 @@ namespace QueueSolver.Core.Models
         public int Id { get; set; }
         public double ArrivalTime { get; set; }
         public double ServiceDuration { get; set; }
-        public int Priority { get; set; } = 0; // Lower number = Higher priority
+        public int Priority { get; set; } = 0;
 
-        // Computed
         public double? ServiceStartTime { get; set; }
         public double? CompletionTime { get; set; }
         public bool IsRejected { get; set; }
